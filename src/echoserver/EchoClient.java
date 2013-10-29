@@ -1,9 +1,6 @@
 package echoserver;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
 
@@ -11,22 +8,23 @@ import java.net.Socket;
 public class EchoClient {
     public static void main(String[] args) {
         try {
-            Socket socket = new Socket((args[0]!=null)? args[0]:"localhost", 6013);
-
-            InputStream input = socket.getInputStream();
+            Socket socket = new Socket((args.length > 0) ? args[0]:"localhost", 6013);
+            int input;
             OutputStream output = socket.getOutputStream();
-            InputStreamReader reader = new InputStreamReader(input);
+            
+            
+            while ((input = System.in.read()) != -1) {
+                output.write(input);
+                output.flush();
+                int outputVal = socket.getInputStream().read();
+                System.out.write(outputVal);
 
-            byte line;
-            while (true) {
-                output.write(input.read());
             }
-
-            //socket.close();
+            output.close();
+            socket.close();
         } catch (IOException ioe) {
             System.out.println("We caught an exception");
             System.err.println(ioe);
         }
     }
-    
 }

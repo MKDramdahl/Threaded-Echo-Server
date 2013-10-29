@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 
 public class EchoServer {
     
@@ -14,15 +15,25 @@ public class EchoServer {
             ServerSocket sock = new ServerSocket(6013);
             
             while (true) {
+                try {
                 Socket client = sock.accept();
                 InputStreamReader isr = new InputStreamReader(client.getInputStream());
-                while (true) {
-                    byte input = (byte) isr.read();
+                int input;
+                while ((input = isr.read()) != -1) {
+                    //System.out.println(input);
                     client.getOutputStream().write(input);
+                    client.getOutputStream().flush();
+                }
+                isr.close();
+                client.close();
+                }catch(SocketException e) {
+                    System.out.println(e);
+                    continue;
                 }
             }
         } catch (IOException ioe) {
             System.err.println(ioe);
+            ioe.printStackTrace();
         }
     }
 }
