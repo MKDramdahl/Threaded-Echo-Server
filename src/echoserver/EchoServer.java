@@ -1,9 +1,9 @@
 package echoserver;
 
-import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
@@ -17,17 +17,20 @@ public class EchoServer {
             while (true) {
                 try {
                 Socket client = sock.accept();
-                InputStreamReader isr = new InputStreamReader(client.getInputStream());
+                InputStream isr = client.getInputStream();
+                OutputStream out = client.getOutputStream();
                 int input;
                 while ((input = isr.read()) != -1) {
-                    //System.out.println(input);
-                    client.getOutputStream().write(input);
-                    client.getOutputStream().flush();
+                    //System.out.println("Server input: " + input);
+                    
+                    out.write(input);
+                    out.flush();
+                    //System.out.println("Input written");
                 }
                 isr.close();
                 client.close();
                 }catch(SocketException e) {
-                    System.out.println(e);
+                    System.err.println(e);
                     continue;
                 }
             }

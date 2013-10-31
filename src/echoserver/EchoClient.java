@@ -14,11 +14,12 @@ public class EchoClient {
             
             
             while ((input = System.in.read()) != -1) {
+                //System.out.println("input: " + input);
                 output.write(input);
                 output.flush();
                 int outputVal = socket.getInputStream().read();
                 System.out.write(outputVal);
-
+                System.out.flush();
             }
             output.close();
             socket.close();
